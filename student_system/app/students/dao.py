@@ -24,7 +24,22 @@ class StudentDAO(BaseDAO):
             student_dict = student_info.to_dict()
             student_dict['major'] = student_info.major.major_name
             return student_dict
-        
+    
+    @classmethod
+    async def find_students(cls, **student_data):
+        async with async_session_maker() as session:
+            query = select(cls.model).options(joinedload(cls.model.major)).filter_by(**student_data)
+            result = await session.execute(query)
+            students_info = result.scalars().all()
+
+            students_data = []
+            for student in students_info:
+                student_dict = student.to_dict()
+                student_dict['major'] = student.major.major_name if student.major else None
+                students_data.append(student_dict)
+
+            return students_data
+
     @classmethod
     async def add_student(cls, student_data: dict):
         async with async_session_maker() as session:
