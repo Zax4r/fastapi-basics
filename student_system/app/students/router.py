@@ -47,7 +47,7 @@ async def get_student_by_filter(request_body: RBStudent= Depends()):
     return res
 
 
-@students_router.get('/{id}', response_model=SStudent | dict)
+@students_router.get('/{student_id}', response_model=SStudent | dict)
 async def get_student_by_id(student_id: int):
     res = await StudentDAO.find_full_data(student_id)
     if res is None:

@@ -16,6 +16,7 @@ class SStudent(BaseModel):
     major_id: int = Field(default=..., ge=1)
     course: int = Field(default=..., ge=1, le=5)
     special_notes: Optional[str] = Field(default=None, max_length=500)
+    photo: Optional[str] = Field(default=None)
 
     @field_validator('phone_number')
     @classmethod
