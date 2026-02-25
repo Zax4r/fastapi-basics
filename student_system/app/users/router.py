@@ -35,7 +35,7 @@ async def login_user(response: Response, user_data: SUserAuth):
                             detail='Неверная почта или пароль')
     access_token = create_access_token({'sub':str(check.id)})
     response.set_cookie(key='user_access_token', value=access_token, httponly=True)
-    return {'access_token': access_token, 'refresh_token': None}
+    return {'ok': True, 'access_token': access_token, 'refresh_token': None, 'message': 'Авторизация успешна!'}
 
 @users_router.get('/me')
 async def get_me(user_data: User = Depends(get_current_user)):
