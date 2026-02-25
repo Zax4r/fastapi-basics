@@ -33,3 +33,17 @@ class SStudent(BaseModel):
 
 class SStudentAdd(SStudent):
     pass
+
+class SStudentUpdAddr(BaseModel):
+    first_name: str = Field(...)
+    last_name: str = Field(...)
+    phone_number: str = Field(...)
+    address: str = Field(..., min_length=10, max_length=200)
+
+
+    @field_validator('phone_number')
+    @classmethod
+    def validate_phone_number(cls, values: str) -> str:
+        if not re.match(r'^\+[\d\s\-\(\)]{7,20}$', values):
+            raise ValueError('Номер телефона должен начинаться с "+" и содержать от 1 до 15 цифр')
+        return values

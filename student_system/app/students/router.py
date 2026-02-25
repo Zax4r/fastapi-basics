@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.students.dao import StudentDAO
-from app.students.schemas import SStudent, SStudentAdd
+from app.students.schemas import SStudent, SStudentAdd, SStudentUpdAddr
 from app.students.rb import RBStudent
 from typing import List
 
@@ -21,6 +21,17 @@ async def delete_student(student_id: int):
         return {'message':f'Студент с id {student_id} удалён'}
     else:
         return {'message':'Такой студент не найден'}
+
+@router_students.put('/update')
+async def update_student(student: SStudentUpdAddr):
+    check = await StudentDAO.put(filter_by={'first_name':student.first_name,
+                                            'last_name':student.last_name,
+                                            'phone_number':student.phone_number},
+                                            address = student.address)
+    if check:
+        return {'message':'Студент обновлён'}
+    else:
+        return {'message':'Такого студента не найдено'}
 
 @router_students.get('/', response_model=List[SStudent])
 async def get_all_students(request_body: RBStudent = Depends()):

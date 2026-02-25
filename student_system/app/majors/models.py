@@ -13,9 +13,6 @@ class Major(Base):
 
     students: Mapped[List['Student']] = relationship('Student', back_populates='major')
 
-    def __str__(self):
-        return f"{self.__class__.__name__}(id={self.id}, major_name={self.major_name!r})"
-    
     def __repr__(self):
-        return str(self)
+        return f"{self.__class__.__name__}(id={self.id}, major_name={self.major_name!r})"
     
