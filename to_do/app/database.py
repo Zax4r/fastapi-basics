@@ -2,9 +2,10 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, Asyn
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from datetime import datetime
 from sqlalchemy import func
+from app.core.config import get_db_url
 
 
-DATABASE_URL = "postgresql+asyncpg://postgres:1111@localhost:5434/to_do_db"
+DATABASE_URL = get_db_url()
 engine = create_async_engine(DATABASE_URL)
 Session = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
