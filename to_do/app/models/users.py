@@ -1,6 +1,7 @@
 from app.database import Base
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column,relationship
 from sqlalchemy import String
+from typing import List
 
 
 class User(Base):
@@ -10,6 +11,8 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(100))
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str] = mapped_column(String(30))
+
+    tasks: Mapped[List['Task']] = relationship('Task',back_populates='user')
 
     def __repr__(self) -> str:
         return f"User(id={self.id}, username={self.username}, email={self.email})"
