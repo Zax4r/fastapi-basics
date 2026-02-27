@@ -1,5 +1,6 @@
 from sqlalchemy import select as sqlalchemy_select, insert as sqlalchemy_insert, delete as sqlalchemy_delete
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class BaseService:
@@ -21,22 +22,30 @@ class BaseService:
     
     @classmethod
     async def add_one(cls, session: AsyncSession, **data):
-        async with session.begin():
-            new_entity = cls.model(**data)
+        new_entity = cls.model(**data)
+        try:
             session.add(new_entity)
+            await session.commit()
             return new_entity
-        
+        except Exception as e:
+            await session.rollback()
+            raise e
+                
     @classmethod
     async def delete_one_by_id(cls, session: AsyncSession, id):
-        async with session.begin():
-            result = await session.execute(
-                sqlalchemy_select(cls.model)
-                .where(cls.model.id == id)
-                )
-            entity = result.scalar_one_or_none()
+        result = await session.execute(
+            sqlalchemy_select(cls.model)
+            .where(cls.model.id == id)
+            )
+        entity = result.scalar_one_or_none()
 
-            if not entity:
-                return None
-            
+        if not entity:
+            return None
+        
+        try:
             await session.delete(entity)
+            await session.commit()
             return id
+        except Exception as e:
+            await session.rollback()
+            raise e
