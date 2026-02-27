@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from app.services.tasks import TaskService
 from app.schemas.tasks import STaskAdd, STaskShow
-from app.dependecies import DbDep
+from app.models.dependecies import DbDep
+from app.core.dependecies import CUDep
 from typing import List
 
 
@@ -15,6 +16,6 @@ async def add_task(new_task: STaskAdd, session: DbDep):
     return {'message':f'Ошибка при добавлении {new_task.task_name} для пользователя {new_task.user_id}'}
 
 @router.get('/', response_model=List[STaskShow])
-async def get_all(session: DbDep):
-    tasks = await TaskService.get_all(session)
+async def get_all(session: DbDep, user: CUDep):
+    tasks = await TaskService.get_all(session, user_id = user.id)
     return tasks
