@@ -11,10 +11,10 @@ class BaseService:
         result = await session.execute(query)
         res = result.scalars()
         return res
-
+    
     @classmethod
-    async def get_one_or_none_by_id(cls, session: AsyncSession, id):
-        query = sqlalchemy_select(cls.model).where(cls.model.id == id)
+    async def get_one_or_none_by_field(cls, session: AsyncSession, **fields):
+        query = sqlalchemy_select(cls.model).filter_by(**fields)
         result = await session.execute(query)
         res = result.scalar_one_or_none()
         return res
