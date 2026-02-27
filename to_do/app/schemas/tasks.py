@@ -6,7 +6,7 @@ class STaskBase(BaseModel):
     task_description: str = Field(default='')
 
 class STaskAdd(STaskBase):
-    user_id: int = Field(...)
+    pass
 
 class STaskShow(STaskBase):
-    pass
+    id: int
