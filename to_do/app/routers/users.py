@@ -10,7 +10,7 @@ router = APIRouter(prefix='/users',tags=['Работа с пользовател
 
 @router.post('/add/')
 async def add_user(user: SUserAdd, session: DbDep):
-    new_user_dict = user.dict()
+    new_user_dict = user.model_dump()
     new_user_dict['password'] = hash_password(new_user_dict['password'])
     check = await UserService.add_one(session,**new_user_dict)
     if check:

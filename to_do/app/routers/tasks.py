@@ -9,11 +9,21 @@ from typing import List
 router = APIRouter(prefix='/tasks',tags=['Работа с задачами'])
 
 @router.post('/add/')
-async def add_task(new_task: STaskAdd, session: DbDep):
-    check = await TaskService.add_one(session,**new_task.dict())
+async def add_task(add_task: STaskAdd, session: DbDep, current_user: CUDep):
+    new_task = add_task.model_dump()
+    new_task['user_id'] = current_user.id
+    check = await TaskService.add_one(session,**new_task)
     if check:
-        return {'message':f'Задача {new_task.task_name} для пользователя {new_task.user_id} добавлена'}
-    return {'message':f'Ошибка при добавлении {new_task.task_name} для пользователя {new_task.user_id}'}
+        return {'message':f'Задача {new_task['task_name']} для пользователя {new_task['user_id']} добавлена'}
+    return {'message':f'Ошибка при добавлении {new_task['task_name']} для пользователя {new_task['user_id']}'}
+
+@router.delete('/delete/{task_id}')
+async def delete_task(task_id: int, session: DbDep, current_user: CUDep):
+    check = await TaskService.delete_task(session, task_id, current_user.id)
+    if check:
+        return {'message':f'Задача успешно удалена'}
+    return {'message':f'Задача не удалена удалена'}
+
 
 @router.get('/', response_model=List[STaskShow])
 async def get_all(session: DbDep, user: CUDep):

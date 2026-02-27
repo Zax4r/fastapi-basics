@@ -9,7 +9,7 @@ from app.schemas.registrations import SRegister
 router = APIRouter(prefix='/registration',tags=['Управление регистрацией'])
 
 
-@router.post('/login')
+@router.post('/login/')
 async def login(session: DbDep, response: Response, form: SRegister = Depends()):
     user = await authenticate_user(session, form.email, form.password)
     if not user:
@@ -25,7 +25,7 @@ async def login(session: DbDep, response: Response, form: SRegister = Depends())
     response.set_cookie('user_access_token',token, httponly=True)
     return { 'message': 'Авторизация успешна!'}
 
-@router.post('/logout')
+@router.post('/logout/')
 async def login(response: Response):
     response.delete_cookie('user_access_token')
     return {'message':'Успешно вышел с аккаунта'}
