@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class STaskBase(BaseModel):
@@ -8,5 +8,12 @@ class STaskBase(BaseModel):
 class STaskAdd(STaskBase):
     pass
 
+class STaskUpd(BaseModel):
+    task_name: str
+    task_description: str
+    is_checked: bool
+
 class STaskShow(STaskBase):
+    model_config = ConfigDict(from_attributes=True)
     id: int
+    is_checked: bool
