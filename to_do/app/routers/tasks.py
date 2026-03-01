@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.services.tasks import TaskService
-from app.schemas.tasks import STaskAdd, STaskShow
+from app.schemas.tasks import STaskAdd, STaskShow, STaskUpd
 from app.models.dependecies import DbDep
 from app.core.dependecies import CUDep
 from typing import List
@@ -17,12 +17,24 @@ async def add_task(add_task: STaskAdd, session: DbDep, current_user: CUDep):
         return {'message':f'Задача {new_task['task_name']} для пользователя {new_task['user_id']} добавлена'}
     return {'message':f'Ошибка при добавлении {new_task['task_name']} для пользователя {new_task['user_id']}'}
 
+@router.put('/update/{task_id}')
+async def update_task(task_id: int, task_upd: STaskUpd, session: DbDep):
+    new_task = task_upd.model_dump()
+    check = await TaskService.update_one(session, task_id, **new_task)
+    if check:
+        return {'message':f'Задача {new_task['task_name']} обновлена'}
+    return {'message':f'Ошибка при обновлении {new_task['task_name']}'}
+
+
+
 @router.delete('/delete/{task_id}')
 async def delete_task(task_id: int, session: DbDep, current_user: CUDep):
     check = await TaskService.delete_task(session, task_id, current_user.id)
     if check:
         return {'message':f'Задача успешно удалена'}
     return {'message':f'Задача не удалена удалена'}
+
+
 
 
 @router.get('/', response_model=List[STaskShow])
