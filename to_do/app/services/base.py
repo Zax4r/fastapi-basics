@@ -1,4 +1,4 @@
-from sqlalchemy import select as sqlalchemy_select, insert as sqlalchemy_insert, delete as sqlalchemy_delete
+from sqlalchemy import select as sqlalchemy_select, insert as sqlalchemy_insert, delete as sqlalchemy_delete, update as sqlalchemy_update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -30,7 +30,19 @@ class BaseService:
         except Exception as e:
             await session.rollback()
             raise e
-                
+    
+    @classmethod
+    async def update_one(cls, session:AsyncSession, id, **new_values):
+        stmt = sqlalchemy_update(cls.model).where(cls.model.id==id).values(**new_values)
+        try:
+            await session.execute(stmt)
+            await session.commit()
+            return True
+        except Exception as e:
+            await session.rollback()
+            raise e
+        
+
     @classmethod
     async def delete_one_by_id(cls, session: AsyncSession, id):
         result = await session.execute(

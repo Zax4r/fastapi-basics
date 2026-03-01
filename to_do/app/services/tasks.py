@@ -1,7 +1,8 @@
 from app.services.base import BaseService
 from app.models.tasks import Task
+from app.models.users import User
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, event, update
 
 
 class TaskService(BaseService):
@@ -25,3 +26,27 @@ class TaskService(BaseService):
         except Exception as e:
             await session.rollback()
             return None
+
+    @event.listens_for(Task,'after_delete')
+    def update_after_deletion(mapper,connection,target):
+        user_id = target.user_id
+        if target.is_checked:
+            connection.execute(
+                update(User)
+                .where(User.id==user_id)
+                .values(completed_tasks = User.completed_tasks-1)
+            )
+        else:
+            connection.execute(
+                update(User)
+                .where(User.id==user_id)
+                .values(active_tasks = User.active_tasks-1)
+            )
+
+    @event.listens_for(Task,'after_insert')
+    def update_after_insert(mapper,connection,target):
+        user_id = target.user_id
+        connection.execute(
+            update(User)
+            .where(User.id==user_id)
+            .values(active_tasks = User.active_tasks+1))
