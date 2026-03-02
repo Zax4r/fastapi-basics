@@ -50,3 +50,43 @@ class TaskService(BaseService):
             update(User)
             .where(User.id==user_id)
             .values(active_tasks = User.active_tasks+1))
+
+    @classmethod
+    async def update_one(cls, session: AsyncSession, id, **new_values):
+
+        stmt = select(cls.model).where(cls.model.id == id)
+        result = await session.execute(stmt)
+        instance = result.scalar_one()
+
+        is_checked_changed = False
+        if 'is_checked' in new_values:
+            if instance.is_checked != new_values['is_checked']:
+                is_checked_changed = True
+                new_is_checked = new_values['is_checked']
+
+        stmt = update(cls.model).where(cls.model.id == id).values(**new_values)
+        await session.execute(stmt)
+
+        if is_checked_changed:
+            if new_is_checked:
+                user_stmt = (
+                    update(User)
+                    .where(User.id == instance.user_id)
+                    .values(
+                        active_tasks=User.active_tasks - 1,
+                        completed_tasks=User.completed_tasks + 1
+                    )
+                )
+            else:
+                user_stmt = (
+                    update(User)
+                    .where(User.id == instance.user_id)
+                    .values(
+                        active_tasks=User.active_tasks + 1,
+                        completed_tasks=User.completed_tasks - 1
+                    )
+                )
+            await session.execute(user_stmt)
+
+        await session.commit()
+        return True 
