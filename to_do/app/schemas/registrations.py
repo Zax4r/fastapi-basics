@@ -1,5 +1,8 @@
 from pydantic import BaseModel, Field, EmailStr
 
-class SRegister(BaseModel):
+class SLogin(BaseModel):
     email: EmailStr = Field(...)
     password: str = Field(...)
+
+class SRegister(SLogin):
+    username: str = Field(...)
