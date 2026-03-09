@@ -1,5 +1,0 @@
-fastapi
-uvicorn
-pwdlib[argon2]
-pyjwt
-python-multipart
