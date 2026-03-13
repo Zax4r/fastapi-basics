@@ -9,6 +9,7 @@ services:
      - "8000:8000"
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
@@ -16,6 +17,8 @@ services:
     depends_on:
       pg:
         condition: service_healthy
+      redis:
+        condition: service_healthy 
 
   pg:
     image: postgres:16-alpine
@@ -32,6 +35,25 @@ services:
       interval: 5s
       timeout: 3s
       retries: 3
+
+  redis:
+    image: redis:7.0-alpine
+    ports:
+     - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  redisgui:
+    image: redis/redisinsight:latest
+    ports:
+     - "5540:5540"
+    depends_on:
+      redis:
+        condition: service_healthy
 
   frontend:
     build:
