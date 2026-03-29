@@ -5,7 +5,7 @@ from starlette.responses import JSONResponse
 
 class RateLimiterMiddleware(BaseHTTPMiddleware):
 
-    def __init__(self, app, redis_url: str, max_requests: int = 5, window_seconds: int = 10):
+    def __init__(self, app, redis_url: str, max_requests: int = 5, window_seconds: int = 3):
         super().__init__(app)
         self.max_requests = max_requests
         self.window_seconds = window_seconds

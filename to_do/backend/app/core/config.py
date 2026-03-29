@@ -11,9 +11,6 @@ class Settings(BaseSettings):
     ALGORITHM: str = os.getenv("ALGORITHM")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 
-    CORS_ORIGINS: list = eval(os.getenv("CORS_ORIGINS"))
-
-
 settings = Settings()
 
 
