@@ -1,41 +1,40 @@
 # To-Do FastAPI
 
-Менеджер задач на FastAPI
+A task manager built with FastAPI.
 
-## Стек
+## Tech Stack
 
 - **Backend**: FastAPI, SQLAlchemy, Alembic
-- **БД**: PostgreSQL 16
-- **Кэш**: Redis 7
-- **Аутентификация**: JWT (cookies)
-- **Контейнеризация**: Docker Compose
+- **Database**: PostgreSQL
+- **Cache**: Redis (Rate limiting)
+- **Authentication**: JWT (cookies)
+- **Containerization**: Docker Compose
 
-## API эндпоинты
+## API Endpoints
 
-| Метод | Путь | Описание |
-|-------|------|----------|
-| POST | `/registration/register/` | Регистрация |
-| POST | `/registration/login/` | Авторизация |
-| POST | `/registration/logout/` | Выход |
-| GET | `/users/` | Список пользователей |
-| GET | `/users/{id}` | Пользователь по ID |
-| POST | `/users/add/` | Добавить пользователя |
-| GET | `/tasks/` | Задачи текущего пользователя |
-| POST | `/tasks/add/` | Добавить задачу |
-| PUT | `/tasks/update/{id}` | Обновить задачу |
-| DELETE | `/tasks/delete/{id}` | Удалить задачу |
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/registration/register/` | Register |
+| POST | `/registration/login/` | Log in |
+| POST | `/registration/logout/` | Log out |
+| GET | `/users/` | List users |
+| GET | `/users/{id}` | Get user by ID |
+| POST | `/users/add/` | Add user |
+| GET | `/tasks/` | Get current user's tasks |
+| POST | `/tasks/add/` | Add task |
+| PUT | `/tasks/update/{id}` | Update task |
+| DELETE | `/tasks/delete/{id}` | Delete task |
 
-## Запуск
+## Running
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
 - Backend: `http://0.0.0.0:8000`
 - Swagger UI: `http://0.0.0.0:8000/docs`
 
-
-## Тесты
+## Tests
 
 ```bash
 cd to_do/backend
