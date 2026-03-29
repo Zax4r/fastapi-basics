@@ -4,7 +4,7 @@ import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
 from app.database import Base, get_db
-from app.main import app
+from main import app
 
 TEST_DB_URL = "postgresql+asyncpg://postgres:1111@localhost/test_todo_db"
 
